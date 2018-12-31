@@ -1,35 +1,29 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import SeasonDisplay from './SeansonDisplay';
+import Spinner from './Spinner';
 
 class App extends React.Component {
-    // specifically to js , not must-have 
-    // called any time the instance of this class is created
-    constructor(props) { // automatically called with props object
-        super(props); // must-have , a referrence to the parent's constructor function
-        
-        // initialize state 
-        this.state = {
-            lat: null,
-            errMessage: '',
-        };
+    state = {
+        lat: null,
+        errMessage: '',
+    };
 
+    componentDidMount() {
         window.navigator.geolocation.getCurrentPosition(
-            (position) => {
-                this.setState({lat: position.coords.latitude})
-            },
-            (err) => {
-                this.setState({errMessage: err.message})
-            }
+            (position) => this.setState({lat: position.coords.latitude}),
+            (err) => this.setState({errMessage: err.message})
         );
     }
+
     // specifically to react, required
     render() {
         if(this.state.errMessage) {
             return <div>Error: {this.state.errMessage}</div>;
         } else if (this.state.lat) {
-            return <div> Latitude: {this.state.lat} </div>;
+            return <SeasonDisplay lat={this.state.lat}/>;
         }
-        return <div>loading</div>;
+        return <Spinner message="Please accept location request"/>;
     }
 }
 
